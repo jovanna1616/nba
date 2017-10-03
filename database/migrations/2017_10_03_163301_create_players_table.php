@@ -18,7 +18,7 @@ class CreatePlayersTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email');
-            $table->unsignedInteger('team_id)');
+            $table->unsignedInteger('team_id');
             $table->foreign('team_id')
                   ->on('teams')
                   ->onDelete('cascade');
