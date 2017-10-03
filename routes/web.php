@@ -1,8 +1,5 @@
 <?php
 
-use App\Http\Controllers\TeamsController;
-use App\Http\Controllers\PlayersController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,8 +14,16 @@ use App\Http\Controllers\PlayersController;
 
 // teams
 Route::get('/', 'TeamsController@index');
-Route::get('/{id}', 'TeamsController@show');
+Route::get('/teams/{id}', 'TeamsController@show');
 
 
 // players
 Route::get('/players/{id}', 'PlayersController@show');
+
+// register
+Route::get('/register', 'UsersController@create');
+Route::post('/register', 'UsersController@store');
+
+// login
+Route::get('/login', 'LoginController@create');
+Route::post('/login', 'LoginController@store');

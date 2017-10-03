@@ -5,7 +5,7 @@
 
         <div class="blog-post">
             <h2 class="blog-post-title">
-                <a href="/{{ $team->id }}">
+                <a href="/teams/{{ $team->id }}">
                     {{ $team->name }}
                 </a>
             </h2>
