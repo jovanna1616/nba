@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\User;
-
+use Illuminate\Support\Facades\Auth;
+// use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 
 class LoginController extends Controller
@@ -36,14 +37,23 @@ class LoginController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-        'name' => 'required| min: 2',
-        'email' => 'required | unique:users',
-        'password' => 'required | confirmed:password_confirmation',
-    ]);
+            'email' => 'required',
+            'password' => 'required',
+        ]);
 
+
+        if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            return redirect('/register');
+        }
+        // $user = User::where('email', 'like', 'request->email')->get();
+        // // dd($user);
+        // if(Auth::login($user)){
+        //     echo die('You are already logged in!');
+        // }
+        return redirect('/');
         
 
-        return redirect('/');
+        
     }
 
     /**
@@ -86,8 +96,11 @@ class LoginController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy()
     {
-        
+        if (Auth::check()) {
+            Auth::logout();
+        }
+        return view('auth.logout');
     }
 }

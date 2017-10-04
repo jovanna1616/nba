@@ -27,3 +27,5 @@ Route::post('/register', 'UsersController@store');
 // login
 Route::get('/login', 'LoginController@create');
 Route::post('/login', 'LoginController@store');
+// logout
+Route::get('/logout', 'LoginController@destroy');
