@@ -27,5 +27,8 @@ Route::post('/register', 'UsersController@store');
 // login
 Route::get('/login', 'LoginController@create');
 Route::post('/login', 'LoginController@store');
+
 // logout
 Route::get('/logout', 'LoginController@destroy');
+
+Route::get('/verification/{user_id}', 'LoginController@verification')->name('verification');

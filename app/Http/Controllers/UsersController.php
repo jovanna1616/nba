@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\User;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\VerificateAccount;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
@@ -12,6 +13,14 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct() {
+
+        $this->middleware('guest');
+
+    }
+
+
     public function index()
     {
     }
@@ -44,11 +53,13 @@ class UsersController extends Controller
         $user->name = request('name');
         $user->email = request('email');
         $user->password = bcrypt(request('password'));
+        $user->is_verified = false;
 
         $user->save();
 
+        Mail::to($user->email)->send(new VerificateAccount($user));
 
-        return redirect('/');
+        return redirect('/login');
     }
 
     /**

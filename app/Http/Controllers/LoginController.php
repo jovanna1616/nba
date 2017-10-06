@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Support\Facades\Auth;
-// use Illuminate\Contracts\Auth\Authenticatable;
+use \Illuminate\Auth\Middleware\Authenticate;
+use \App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Http\Request;
 
 class LoginController extends Controller
@@ -13,6 +14,15 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct() {
+
+        $this->middleware('guest', ['except' => 'destroy']);
+
+    }
+
+
+
     public function index()
     {
         
@@ -25,6 +35,7 @@ class LoginController extends Controller
      */
     public function create()
     {
+        
         return view('auth.login');
     }
 
@@ -36,24 +47,56 @@ class LoginController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'email' => 'required',
             'password' => 'required',
         ]);
 
 
-        if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect('/register');
+
+
+        // if user is_verified == false
+        $user = User::where('email', $request->email)->first();
+
+        
+        if($user->is_verified == false) {
+
+            
+            return back()->withErrors(['message' => 'You must first verify Your account.']);
+
         }
-        // $user = User::where('email', 'like', 'request->email')->get();
-        // // dd($user);
-        // if(Auth::login($user)){
-        //     echo die('You are already logged in!');
-        // }
-        return redirect('/');
+
+
+
         
 
         
+        // if bad credentials
+        if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            
+            return redirect('/register')->withErrors([
+                'message' => 'Bad credentials. Please try again'
+            ]);
+        }
+
+        
+        
+
+        return redirect('/');
+        
+        
+    }
+
+    public function verification($id) {
+
+        $user = User::find($id);
+        $user->is_verified = true;
+        $user->save();
+
+
+        Auth::login($user);
+        return redirect('/');
     }
 
     /**
